@@ -33,6 +33,16 @@ def on_press(key):
     if key == keyboard.Key.esc:
         exit()
 
+def on_press_action(action, numberline): # version of the on_press function without keyboard input
+    print("action: "+str(action))
+    if action == 0:
+        numberline =  numberline[1:]+[numberline[0]]
+        return numberline
+
+    if action == 1:
+        numberline = [numberline[-1]] + numberline[:-1]
+        return numberline
+
 def userInput():
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
