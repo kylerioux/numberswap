@@ -9,11 +9,16 @@ def generateList(len):
 
 # check if numbers are in order
 def orderCheck(numlist):
-    global user_initiated 
+    #print('order check')
+
+    numlist = numlist.copy()#[0]#.tolist()
+    print(numlist)
+    #print(type(numlist))
+    #global user_initiated 
     for i, each in enumerate(numlist):
         if i == len(numlist)-1:
             # if user_initiated and user_initiated == True:
-            #     print("The numbers are in order!")
+            #print("The numbers are in order!")
             return True
             
         if numlist[i]+1 != numlist[i+1]:
@@ -33,22 +38,14 @@ def on_press(key):
     if key == keyboard.Key.esc:
         exit()
 
-def on_press_action(action, numberline): # version of the on_press function without keyboard input
-    print("action: "+str(action))
-    if action == 0:
-        numberline =  numberline[1:]+[numberline[0]]
-        return numberline
-
-    if action == 1:
-        numberline = [numberline[-1]] + numberline[:-1]
-        return numberline
-
 def userInput():
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
 
 def printList(numlist):
     visual = numlist.copy()
+    #print('pList')
+    # print(visual)
     visual.insert(0, '|')
     visual.insert(3, '|')
     print(*visual)
