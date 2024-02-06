@@ -3,7 +3,7 @@ from train_model import CustomEnv
 from stable_baselines3.common.env_util import make_vec_env
 
 def main():
-    model = PPO.load("ppo_numswap_5000_vec_env_v1")
+    model = PPO.load("ppo_numswap_200000_env_rew_4")
     vec_env = make_vec_env(CustomEnv, seed=1, n_envs=1, env_kwargs=dict(numberline_len=10))
     obs = vec_env.reset()
     print("inf main")

@@ -12,13 +12,8 @@ def orderCheck(numlist):
     #print('order check')
 
     numlist = numlist.copy()#[0]#.tolist()
-    print(numlist)
-    #print(type(numlist))
-    #global user_initiated 
     for i, each in enumerate(numlist):
         if i == len(numlist)-1:
-            # if user_initiated and user_initiated == True:
-            #print("The numbers are in order!")
             return True
             
         if numlist[i]+1 != numlist[i+1]:
@@ -44,8 +39,6 @@ def userInput():
 
 def printList(numlist):
     visual = numlist.copy()
-    #print('pList')
-    # print(visual)
     visual.insert(0, '|')
     visual.insert(3, '|')
     print(*visual)

@@ -32,17 +32,27 @@ class CustomEnv(gymnasium.Env):
         info = {}
         truncated = False
         done = False
-        reward = -1
         obs = self.on_press_action(action)
+        reward = self.reward_calc(self.numberline)
         if orderCheck(self.numberline):
-            reward = 1000
+            print("ORDER CHECK SUCCESS")
+            reward += 200
             done = True
-        #[0]
-        #self.numberline = np.array([self.numberline]).astype(np.uint8)
-        # print('step')
-        # print(type(self.numberline))
-        # print(self.numberline)
+        reward -= 1
         return obs, reward, done, truncated, info
+
+    def reward_calc(self, numlist):
+        numlist = numlist.copy()
+        new_rew = 0
+        for i, each in enumerate(numlist):
+            next_idx = (i+1)%len(numlist)
+            prev_idx = (i-1)%len(numlist)
+            if numlist[i]+1 == numlist[next_idx]:
+                new_rew += 1
+            if numlist[i]-1 == numlist[prev_idx]:
+                new_rew += 1
+        #print("Interpretable metric (max 17): "+str(new_rew))
+        return new_rew**2
 
     def reset(self, seed=None, options=None):
         """
@@ -55,12 +65,9 @@ class CustomEnv(gymnasium.Env):
 
         super().reset(seed=seed, options=options) 
 
-        #self.numberline = self.numberline[np.newaxis, :]
-
         self.numberline = generateList(self.numberline_len)
         
         obs = np.array([self.numberline]).astype(np.uint8)
-        #self.numberline = self.numberline[np.newaxis, :]
         return obs, {}  # empty info dict
 
     def render(self, mode='console'):
@@ -69,8 +76,6 @@ class CustomEnv(gymnasium.Env):
 
     def on_press_action(self, action):
         global numberline
-        #print('onpress')
-        #print(self.numberline)
         loc = self.numberline.copy()
         if action == 0:
             #print('onpress1')
@@ -91,11 +96,11 @@ def main():
     global reward
     reward = 0 # what should it be initialized to?
 
-    vec_env = make_vec_env(CustomEnv, seed=1, n_envs=1, env_kwargs=dict(numberline_len=10)) #seed=1 needed in windows
+    vec_env = make_vec_env(CustomEnv, seed=1, n_envs=4, env_kwargs=dict(numberline_len=10)) #seed=1 needed in windows
 
-    model = PPO("MlpPolicy", vec_env, verbose=1).learn(50000)
+    model = PPO("MlpPolicy", vec_env, verbose=1).learn(200000)
 
-    model.save("ppo_numswap_5000_vec_env_v1")
+    model.save("ppo_numswap_200000_env_rew_4")
     
     # env = CustomEnv(numberline_len=10)
     # check_env(env, warn=True) # If the environment doesn't follow the interface, an error will be thrown
